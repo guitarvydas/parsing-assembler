@@ -8,20 +8,19 @@
     (initially p scanned-pasm)
     (pasm::<pasm> p)
     (let ((dsl-lisp-string (get-output-stream-string (pasm:output-string-stream p))))
-      (compile-string-as-file dsl-lisp-string) 
-      (let ((scanned-dsl (scanner:scanner dsl-string)))
-	(initially p scanned-dsl)
-	(funcall start-function p)
-	(get-output-stream-string (pasm:output-string-stream p))))))
+      (let ((pkg (package-name (find-package (symbol-package start-function)))))
+	(compile-string-as-file dsl-lisp-string pkg) 
+	(let ((scanned-dsl (scanner:scanner dsl-string)))
+	  (initially p scanned-dsl)
+	  (funcall start-function p)
+	  (get-output-stream-string (pasm:output-string-stream p)))))))
 
-(defun compile-string-as-file (str)
+(defun compile-string-as-file (str pkg)
   ;; str reprents the contents of a generated .lisp file
   ;; LOAD it...
   ;; (there must be a better way)
   (with-open-file (f "/tmp/temp.lisp" :direction :output :if-exists :supersede :if-does-not-exist :create)
-    (write-string "(in-package :parsing-assembler)
-
-" f)
+    (format f "(in-package ~s)~%~%" pkg)
     (write-string str f))
   (load "/tmp/temp.lisp"))
 
