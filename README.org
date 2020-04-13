@@ -1,0 +1,84 @@
+* intro
+  PARSING-ASM - a minimal syntax that parses atomic tokens (from scanner) and creates an output string
+  creates a Lisp file that can parse pasm atomic syntax
+  parser.lisp parses input pasm syntax and returns a Lisp program (in output-string-stream p) which
+    is a parser (specified by the input pasm code)
+  (see READING.txt for commentary)
+* operations:
+  - 'c' accept a :character token with text 'c' (else error)
+  - ?'c' look ahead if succeed if next-token is a :character token with text 'c'
+  - KIND all caps -> accept a token of a kind which matches the name in all caps (else error)
+  - ?KIND look ahead for token of given kind (no error)
+  - KIND/str accept if token is given kind and its text matches the given (lower case) str (else error)
+  - ?KIND/str lookahead and succeed if next token has kind given by KIND and text given by str (no error)
+  - @<name> - call parsing rule with given name
+  - &<pred> - call parsing predicate with name pred, it must return `+ok+` or `+fail+` (predicate can be used in a choice rules - see below)
+  - <name>  - call an external mechanism function, return value is ignored
+  - {...} - cycle (loop)
+  - >     - exit cycle
+  - =<name> - define a rule with given name ("rule")
+  - -<name> - define a parsing predicate with given name
+  - >> ^ok     - return `+ok+` from a parsing predicate
+  - >> ^fail   - return `+fail+` from a parsing predicate
+  - >>         - return from a parsing rule (return value is not specified and is ignored by caller)
+  - [       - begin a choice (if-then-else / COND), first item after '[' must return `+ok+` or `+fail+`
+  - |       - choice alternate, first item after '[' must return `+ok+` or `+fail+`
+  - ]       - end choice
+  - *       - always succeeds (usually used as "otherwise" choice alternate)
+  - ~<name> - filter operation - call rule <name> "for every input token", if accepted-token and next-token are
+              the same as before the filter operation, accept once (thereby advancing the stream), else
+              save "(accepted-token p)" onto a list of new tokens
+              ==> i.e. filter the token stream, using a rule that creates one accepted token at a time, throw away
+               tokens that were not accepted
+  - .  accept any token
+
+  NB - note that all operations begin with a single-character "left-handle" - making it easy to parse this syntax
+  NB - >> is overloaded, but can only be one of 3 variants (which remain easy to parse)
+  NB - pasm syntax is barely human readable - it is meant as an "assembler" only for creating more-readable DSLs
+  NB - inspired by S/SL https://en.wikipedia.org/wiki/S/SL_programming_language (S/SL claims to be a compiler language, but it is much more than that)
+* examples
+** see READING.txt and test.lisp, test2.lisp and test3.lisp
+** 
+   PEG-style "a*" is written as `{[ ?SYMBOL/a SYMBOL/a | * > ]}`
+   PEG-style "a+" is written as `SYMBOL/a {[ ?SYMBOL/a SYMBOL/a | * > ]}`
+
+   It should be possible to write filters that provide less-unwieldly syntaxes for the above (e.g. A* and a+),
+     the filters would produce low-level RPA syntax.
+
+   The point of RPA is to provide access to the most atomic operations (of parsing).  
+     Then, write DSL transpilers, composed of the atomic operations to provide more human-readable DSLs
+     
+* build
+
+#+name: lisp
+#+begin_src lisp :results lisp
+  (ql:quickload :parsing-assembler)
+  #| results in a funtion (scan-and-parse ...) where ... is an pasm spec for a DSL |#
+#+end_src
+
+#+name: lisp
+#+begin_src lisp
+  (ql:quickload :parsing-assembler/test)
+#+end_src
+
+#+name: lisp
+#+begin_src lisp :results output
+  (parsing-assembler::test0)
+#+end_src
+
+#+name: lisp
+#+begin_src lisp :results output
+  (parsing-assembler::test1)
+#+end_src
+#+name: lisp
+#+begin_src lisp :results output
+  (parsing-assembler::test2)
+#+end_src
+#+name: lisp
+#+begin_src lisp :results output
+  (parsing-assembler::test3)
+#+end_src
+
+#+RESULTS: lisp
+: final = ((lambda(x) (+ x 15)) ((lambda(x) (+ x 11)) ((lambda(x) (+ x 9)) 7)))
+

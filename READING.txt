@@ -1,0 +1,126 @@
+(Scroll down for explanation...)
+
+This (nonsense) input DSL code...
+
+% test rp DSL
+
+= junk-rule
+  'a'
+  ?'a'
+  AAA
+  ?BBB
+  CCC/ddd
+  ?EEE/fff
+  @rule
+  &pred
+  external-call
+  {[ &pred @rule
+   | &pred @rule
+   | * >
+  ]}
+  
+= delete-whitespace
+  [ ?SPACE % if lookahead is a space
+    SPACE  % accept it and don't emit anything
+  | * accept-and-emit-token
+]
+
+... produces this (nonsense) Lisp code ...
+(NB.  Lisp comments begin with ";")
+(NB.  the transpiler outputs non-indented code, I used emacs to indentify the code to make it more human-readable)
+
+>>  % test rp DSL
+    ^^ comment, ignored and deleted
+
+>>
+    ^^ whitespace, ignored and deleted
+
+>>  = junk-rule
+    ^^ define new parsing rule
+(defmethod junk-rule ((p parser))
+
+>>    'a'
+    ^^ hard input a :character token with token-text of "a" (else error)
+  (input-char p #\a)
+
+>>    ?'a'
+   ^^ look ahead for :character token with token-text of "a", returns +succeed+ or +fail+ (no error)
+  (parser-success? (lookahead-char? p #\a))
+
+>>    AAA
+   ^^ hard input a token with kind :aaa (else error), don't care about its token-text, any text will do as long as its token-kind is :aaa
+  (input p :AAA)
+
+>>    ?BBB
+   ^^ look ahead for :bbb token, +succeed+ if next-token is of kind :bbb, else +fail+
+  (parser-success? (lookahead? p :BBB))
+
+>>    CCC/ddd
+   ^^ hard input a :ccc token with text "ddd", else error
+  (input-symbol p "ddd")
+
+>>    ?EEE/fff
+   ^^ lookahead for :eee token with text "fff", return +succeed+ or +fail+
+  (parser-success? (look-symbol? p "fff"))
+
+>>    @rule
+   ^^ call parser (generated) rule named "rule"
+  (call-rule p #'rule)
+
+>>    &pred
+    ^^ call parser (generated) predicate named "pred", it must return +succeed+ or +fail+
+    ^^ succeed only if it returns +succeed+
+  (parser-success? (call-predicate p #'pred))
+
+>>    external-call
+   ^^ call an external method (aka mechanism), return value ignored
+
+>>    {[ &pred @rule
+>>     | &pred @rule
+>>     | * >
+>>    ]}
+    ^^ cycle (aka loop) on choice (aka conditional - Lisp-like COND),
+    ^^ first item in each choice must be a predicate (& or ?)
+    ^^ pick the first (in sequence) alternate that returns +true+, then execute the rest of the body of that choice
+    ^^ * is always +true+ (aka otherwise)
+    ^^ > breaks out of the cycle
+    ^^ ] closes the choice
+    ^^ } closes the cycle
+(loop
+   (cond
+     ((parser-success? (call-predicate p #'pred))(call-rule p #'rule));choice clause
+     ((parser-success? (call-predicate p #'pred))
+      (call-rule p #'rule)
+      );choice alt
+     ( t 
+      (return) ;;;; in Lisp, (return) means exit loop (in this context, I'm skipping the details)
+      );choice alt
+     );choice
+   ) ;;loop
+
+   ^^ (nothing) parser finishes parsing the RULE 
+   ^^ (no input string needed, no semi-colon, no END, etc. - the parser can tell when it is finished a RULE)
+) ; rule
+
+>>    
+>>  = delete-whitespace
+>>    [ ?SPACE % if lookahead is a space
+>>      SPACE  % accept it and don't emit anything
+>>    | * accept-and-emit-token
+>>  ]
+    ^^ define a RULE called delete-whitespace
+    ^^ contains a choice [ ?SPACE ... | * ] which says that if the lookahead token is :space then ...
+    ^^ hard-input the SPACE and do nothing else (this code is nonsense, so it doesn't actually do anything)
+    ^^ otherwise (| *) call the external method accept-and-emit-token
+(defmethod delete-whitespace ((p parser))
+  (cond
+    ((parser-success? (lookahead? p :SPACE))(input p :SPACE));choice clause
+    ( t 
+     (call-external p #'accept-and-emit-token)
+     );choice alt
+    );choice
+
+>>  
+   ^^ (nothing) parser finishes parsing the RULE 
+   ^^ (no input string needed, no semi-colon, no END, etc. - the parser can tell when it is finished a RULE)
+) ; rule
