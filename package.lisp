@@ -2,8 +2,9 @@
   (:use :cl :scanner)
   (:nicknames "PASM")
   (:export
-   #:output-string-stream
+   #:transpile
    #:parser
+   #:output-string-stream
 
    #:initially
    #:lookahead-char?
