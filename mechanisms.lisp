@@ -133,7 +133,7 @@
     (decf (depth self))
     (spaces *standard-output* (depth self))
 					; babel mode in emacs wants *standard-output*
-    (format *standard-output* "return ~a accepted=(~a ~s ~a ~a) next=(~a ~s ~a ~a)~%"
+    (format *standard-output* "back into ~a accepted=(~a ~s ~a ~a) next=(~a ~s ~a ~a)~%"
 	    (current-rule self)
 	    (scanner:token-kind (accepted-token self)) (scanner:token-text (accepted-token self)) 
 	    (scanner:token-line (accepted-token self)) (scanner:token-position (accepted-token self))
@@ -144,5 +144,5 @@
   (format strm "~&")
   (@:loop
     (@:exit-when (<= n 0))
-    (format strm " ")
+    (format strm "  ")
     (decf n)))
