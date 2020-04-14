@@ -23,6 +23,7 @@
    #:call-predicate
    #:call-external
    #:accept
+   #:pasm-parse-error
 
    #:token-stream
    #:output-string-stream
