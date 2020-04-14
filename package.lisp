@@ -27,5 +27,8 @@
    #:token-stream
    #:output-string-stream
    #:next-token
-   #:accepted-token))
+   #:accepted-token
+
+   #:ptrace
+   #:current-rule)) ;; for debug
    

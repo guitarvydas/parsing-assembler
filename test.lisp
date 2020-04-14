@@ -22,11 +22,6 @@
    | * >
   ]}
   
-= delete-whitespace
-  [ ?SPACE % if lookahead is a space
-    SPACE  % accept it and don't emit anything
-  | * accept-and-return-token
-]
 ")
 
 ;; mini-test ... (total nonsense in meaning, but legal syntax)

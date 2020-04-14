@@ -38,7 +38,7 @@
 
 (defmethod lookahead-symbol? ((self parser) str)
   (let ((tok (next-token self)))
-    (if (and (eq :character (token-kind tok))
+    (if (and (eq :symbol (token-kind tok))
 	      (string= str (token-text tok)))
        +succeed+
       +fail+)))
@@ -71,7 +71,9 @@
 (defmethod emit-string ((self parser) fmtstr &rest args)
   (let ((out (output-string-stream self)))
     ;(apply 'cl:format *standard-output* fmtstr args)
-    (apply 'cl:format out fmtstr args)))
+    (cond ((characterp fmtstr) 
+	   (cl:format out "~c" fmtstr))
+	  (t (apply 'cl:format out fmtstr args)))))
 
 
 (defmethod call-rule ((self parser) func)
@@ -101,3 +103,12 @@
 	     (accept p)
 	     (push (accepted-token p) %new-list))))
     (initially p (reverse %new-list))))
+
+(defmethod ptrace ((self parser))
+  ; babel mode in emacs wants *standard-output*
+  ;(format *error-output* "~&trace in ~a next=(~a ~s ~a ~a) accepted=(~a ~s ~a ~a)~%"
+  (format *standard-output* "~&trace in ~a next=(~a ~s ~a ~a) accepted=(~a ~s ~a ~a)~%"
+	  (current-rule self)
+	  (scanner:token-kind (next-token self)) (scanner:token-text (next-token self)) (scanner:token-line (next-token self)) (scanner:token-position (next-token self))
+	  (scanner:token-kind (accepted-token self)) (scanner:token-text (accepted-token self)) (scanner:token-line (accepted-token self)) (scanner:token-position (accepted-token self))))
+
