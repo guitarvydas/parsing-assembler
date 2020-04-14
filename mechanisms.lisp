@@ -107,8 +107,42 @@
 (defmethod ptrace ((self parser))
   ; babel mode in emacs wants *standard-output*
   ;(format *error-output* "~&trace in ~a next=(~a ~s ~a ~a) accepted=(~a ~s ~a ~a)~%"
-  (format *standard-output* "~&trace in ~a next=(~a ~s ~a ~a) accepted=(~a ~s ~a ~a)~%"
+  (format *standard-output* "~&trace in ~a accepted=(~a ~s ~a ~a) next=(~a ~s ~a ~a)~%"
 	  (current-rule self)
-	  (scanner:token-kind (next-token self)) (scanner:token-text (next-token self)) (scanner:token-line (next-token self)) (scanner:token-position (next-token self))
-	  (scanner:token-kind (accepted-token self)) (scanner:token-text (accepted-token self)) (scanner:token-line (accepted-token self)) (scanner:token-position (accepted-token self))))
+	  (scanner:token-kind (accepted-token self)) (scanner:token-text (accepted-token self)) 
+	  (scanner:token-line (accepted-token self)) (scanner:token-position (accepted-token self))
+	  (scanner:token-kind (next-token self)) (scanner:token-text (next-token self)) 
+	  (scanner:token-line (next-token self)) (scanner:token-position (next-token self))))
 
+(defparameter *pasm-tracing* nil)
+
+(defmethod p-into-trace ((self parser))
+  (when *pasm-tracing*
+    (incf (depth self))
+    (spaces *standard-output* (depth self))
+					; babel mode in emacs wants *standard-output*
+    (format *standard-output* "into   ~a accepted=(~a ~s ~a ~a) next=(~a ~s ~a ~a)~%"
+	    (current-rule self)
+	    (scanner:token-kind (accepted-token self)) (scanner:token-text (accepted-token self)) 
+	    (scanner:token-line (accepted-token self)) (scanner:token-position (accepted-token self))
+	    (scanner:token-kind (next-token self)) (scanner:token-text (next-token self)) 
+	    (scanner:token-line (next-token self)) (scanner:token-position (next-token self)))))
+  
+(defmethod p-return-trace ((self parser))
+  (when *pasm-tracing*
+    (decf (depth self))
+    (spaces *standard-output* (depth self))
+					; babel mode in emacs wants *standard-output*
+    (format *standard-output* "return ~a accepted=(~a ~s ~a ~a) next=(~a ~s ~a ~a)~%"
+	    (current-rule self)
+	    (scanner:token-kind (accepted-token self)) (scanner:token-text (accepted-token self)) 
+	    (scanner:token-line (accepted-token self)) (scanner:token-position (accepted-token self))
+	    (scanner:token-kind (next-token self)) (scanner:token-text (next-token self)) 
+	    (scanner:token-line (next-token self)) (scanner:token-position (next-token self)))))
+
+(defun spaces (strm n)
+  (format strm "~&")
+  (@:loop
+    (@:exit-when (<= n 0))
+    (format strm " ")
+    (decf n)))

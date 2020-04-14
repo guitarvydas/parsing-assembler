@@ -30,5 +30,6 @@
    #:accepted-token
 
    #:ptrace
+   #:*pasm-tracing*
    #:current-rule)) ;; for debug
    

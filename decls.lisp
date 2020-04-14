@@ -14,6 +14,7 @@
    (accepted-token :accessor accepted-token :initform nil)
    (state :accessor state :initform :idle)
    (current-rule :accessor current-rule :initform nil)
+   (depth :accessor depth :initform 0)
    ))
 
 ;; a parser must support:
