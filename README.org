@@ -4,6 +4,14 @@
   parser.lisp parses input pasm syntax and returns a Lisp program (in output-string-stream p) which
     is a parser (specified by the input pasm code)
   (see READING.txt for commentary)
+* usage
+  (transpile p <pasm-spec-string> <program-in-dsl-string> '<rule-to-call>)
+
+  (let ((pasm:*pasm-tracing t)) ;; to enable tracing of every rule
+    (transpile p <pasm-spec-string> <program-in-dsl-string> '<rule-to-call>))
+
+  ptrace - in <pasm-spec-string> - print a trace of accepted-token and next-token at this point
+
 * operations:
   - 'c' accept a :character token with text 'c' (else error)
   - ?'c' look ahead if succeed if next-token is a :character token with text 'c'
