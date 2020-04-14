@@ -58,7 +58,7 @@
   (flet ((nope () (pasm-parse-error self (format nil "expected :symbol with text ~a" str))))
     (if (lookahead? self :symbol)
 	(if (string= str (scanner:token-text (next-token self)))
-	   (accept)
+	   (accept self)
 	  (nope))
 	(nope))))
 
