@@ -61,7 +61,11 @@
 #+name: lisp
 #+begin_src lisp :results lisp
   (ql:quickload :parsing-assembler)
-  #| results in a funtion (scan-and-parse ...) where ... is an pasm spec for a DSL |#
+#+end_src
+
+#+name: lisp
+#+begin_src lisp
+  (ql:quickload :parsing-assembler/use)
 #+end_src
 
 #+name: lisp
@@ -88,9 +92,8 @@
 #+end_src
 
 #+RESULTS: lisp
-: working on PASM (tracing NIL)
+: **** PASM (tracing NIL)
 : pasm-filter-stream #<STANDARD-GENERIC-FUNCTION PARSING-ASSEMBLER::SKIP-SPACES-AND-COMMENTS (1)>
-: working on DSL
 : pasm-filter-stream #<STANDARD-GENERIC-FUNCTION PARSING-ASSEMBLER::RMSPACES (1)>
 :       result=x+y
 

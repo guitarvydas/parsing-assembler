@@ -6,7 +6,7 @@
 (defun parser-success? (x)
   (eq x +succeed+))
 
-(defclass parser (scanner:scanner) 
+(defclass parser () 
   ((token-stream :accessor token-stream :initarg :token-stream :initform nil) ;; actually, just a list
    (output-string-stream :accessor output-string-stream :initarg :output-stream 
 			 :initform (make-string-output-stream))
