@@ -88,5 +88,9 @@
 #+end_src
 
 #+RESULTS: lisp
-: final = ((lambda(x) (+ x 15)) ((lambda(x) (+ x 11)) ((lambda(x) (+ x 9)) 7)))
+: working on PASM (tracing NIL)
+: pasm-filter-stream #<STANDARD-GENERIC-FUNCTION PARSING-ASSEMBLER::SKIP-SPACES-AND-COMMENTS (1)>
+: working on DSL
+: pasm-filter-stream #<STANDARD-GENERIC-FUNCTION PARSING-ASSEMBLER::RMSPACES (1)>
+:       result=x+y
 

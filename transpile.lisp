@@ -6,6 +6,7 @@
   ;; output == string, code (Lisp) that is the DSL program rewritten in Lisp
   (let ((scanned-pasm (scanner:scanner pasm-dsl-spec-string)))
     (initially p scanned-pasm)
+(format *standard-output* "~&**** PASM (tracing ~a)~%" *pasm-tracing*)
     (pasm::<pasm> p)
     (let ((dsl-lisp-string (get-output-stream-string (pasm:output-string-stream p))))
       (let ((pkg (package-name (find-package (symbol-package start-function)))))
@@ -24,4 +25,25 @@
     (write-string str f))
   (load "/tmp/temp.lisp"))
 
-		    
+(defmethod string-to-tokens (str)
+  (let ((scanned-tokens (scanner:scanner str)))
+    scanned-tokens))
+
+(defmethod filter-tokens-to-tokens ((p parser) token-stream pasm-script start-rule)
+  (initially p token-stream)
+  (start-rule p)
+
+
+
+
+    (initially p scanned-pasm)
+(format *standard-output* "~&**** PASM (tracing ~a)~%" *pasm-tracing*)
+    (pasm::<pasm> p)
+    (let ((dsl-lisp-string (get-output-stream-string (pasm:output-string-stream p))))
+      (let ((pkg (package-name (find-package (symbol-package start-function)))))
+	(compile-string-as-file dsl-lisp-string pkg) 
+	(let ((scanned-dsl (scanner:scanner dsl-string)))
+	  (initially p scanned-dsl)
+	  (funcall start-function p)
+	  (get-output-stream-string (pasm:output-string-stream p)))))))
+

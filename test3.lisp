@@ -104,4 +104,5 @@
 ;; I have chosen to be very explicit / clunky.  It would certainly be possible to optimize this implementation.
 (defun test3 ()
   (let ((p (make-instance 'test-parser3)))
-    (format *standard-output* "final = ~a" (transpile p *test-pasm-spec-3b* *test-dsl-code3b* 'parsing-assembler::calculator))))
+    (let ((*pasm-tracing* t))
+      (format *standard-output* "final = ~a" (transpile p *test-pasm-spec-3b* *test-dsl-code3b* 'parsing-assembler::calculator)))))

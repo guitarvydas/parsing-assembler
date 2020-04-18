@@ -91,6 +91,7 @@
   (accepted-token p))
 
 (defmethod pasm-filter-stream ((p parser) rule-name)
+(format *standard-output* "~&pasm-filter-stream ~a~%" rule-name)
   (let ((%new-list nil))
     (loop (when (eq :EOF (token-kind (accepted-token p)))
 	    (return))
