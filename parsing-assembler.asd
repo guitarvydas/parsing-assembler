@@ -17,6 +17,7 @@
 				     (:file "mechanisms" :depends-on ("decls"))
 				     (:file "unexported-mechanisms" :depends-on ("decls"))
 				     (:file "parser" :depends-on ("mechanisms" "unexported-mechanisms"))
+				     (:file "pasm" :depends-on ("parser"))
 				     (:file "transpile" :depends-on ("parser"))))))
 
 

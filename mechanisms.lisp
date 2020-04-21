@@ -18,8 +18,11 @@
     (advance-next-token self)))
 
 (defun format-token (tok)
-  (format nil "kind=~s line=~a position=~a text=~a" (token-kind tok) (token-line tok) (token-position tok)
-	  (token-text tok)))
+  (if (characterp (token-text tok))
+      (format nil "kind=~s line=~a position=~a text=(~a)~a" (token-kind tok) (token-line tok) (token-position tok)
+	      (char-code (token-text tok)) (token-text tok))
+      (format nil "kind=~s line=~a position=~a text=~a" (token-kind tok) (token-line tok) (token-position tok)
+	      (token-text tok))))
 
 (defmethod pasm-parse-error ((self parser) message)
   (let ((final-message (format nil "~s, but got ~s" message (format-token (next-token self)))))
@@ -52,7 +55,7 @@
 (defmethod input-char ((self parser) c)
   (if (eq +succeed+ (lookahead-char? self c))
       (accept self)
-     (pasm-parse-error self (format nil "expected character ~a" c))))
+     (pasm-parse-error self (format nil "expected character ~a (~a)" c (char-code c)))))
 
 (defmethod input-symbol ((self parser) str)
   (flet ((nope () (pasm-parse-error self (format nil "expected :symbol with text ~a" str))))
@@ -91,7 +94,6 @@
   (accepted-token p))
 
 (defmethod pasm-filter-stream ((p parser) rule-name)
-(format *standard-output* "~&pasm-filter-stream ~a~%" rule-name)
   (let ((%new-list nil))
     (loop (when (eq :EOF (token-kind (accepted-token p)))
 	    (return))

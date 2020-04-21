@@ -3,6 +3,8 @@
   (:nicknames "PASM")
   (:export
    #:transpile
+   #:pasm-to-file
+
    #:parser
    #:output-string-stream
 
