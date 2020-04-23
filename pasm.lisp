@@ -7,7 +7,7 @@
       (<pasm> p)
       (with-open-file (outf outfilename :direction :output :if-exists :supersede :if-does-not-exist :create)
 	(let ((str (get-output-stream-string (pasm:output-string-stream p))))
-	  (format outf "(in-package :~s)~%~%" package-name)
+	  (format outf "(in-package ~s)~%~%" package-name)
 	  (write-string str outf)
 	  #+nil(with-input-from-string (ins str)
 		 (let ((sexp (read ins nil :eof)))
