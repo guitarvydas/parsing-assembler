@@ -95,8 +95,5 @@
 #+end_src
 
 #+RESULTS: lisp
-: **** PASM (tracing NIL)
-: pasm-filter-stream #<STANDARD-GENERIC-FUNCTION PARSING-ASSEMBLER::SKIP-SPACES-AND-COMMENTS (1)>
-: pasm-filter-stream #<STANDARD-GENERIC-FUNCTION PARSING-ASSEMBLER::RMSPACES (1)>
-:       result=x+y
+| :PARSING-ASSEMBLER/USE |
 
