@@ -229,7 +229,7 @@
                 pasm:+succeed+)
 	      (if (string= "ok" (scanner:token-text (pasm:accepted-token p)))
 		  (progn
-                      (pasm:emit-string p "(setf (current-rule self) prev-rule) (pasm::p-return-trace p)")
+                      (pasm:emit-string p "(setf (current-rule p) prev-rule) (pasm::p-return-trace p)")
                       (pasm:emit-string p "(return-from ~a pasm:+succeed+)" (pasm::current-rule p))
                     pasm:+succeed+)
 		  pasm:+fail+)))
@@ -257,7 +257,7 @@
              (pasm:emit-string p "  (let ((prev-rule (current-rule p)))")
 	     (pasm:emit-string p "     (setf (current-rule p) \"~a\") (pasm::p-into-trace p)~%" (pasm::current-rule p))
   (<parse-statements> p)
-             (pasm:emit-string p "(setf (current-rule self) prev-rule) (pasm::p-return-trace p)")
+             (pasm:emit-string p "(setf (current-rule p) prev-rule) (pasm::p-return-trace p)")
              (pasm:emit-string p "))~%~%")
   pasm:+succeed+
   )
