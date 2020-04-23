@@ -60,6 +60,9 @@
 
 #+name: lisp
 #+begin_src lisp :results lisp
+ (uiop:run-program "rm -rf ~/.cache/common-lisp ;
+ rm -rf ~/quicklisp/local-projects/*/*.fasl ;
+ rm -rf ~/quicklisp/local/projects/*/*~")
   (ql:quickload :parsing-assembler)
 #+end_src
 
