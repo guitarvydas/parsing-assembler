@@ -16,6 +16,41 @@
   (pasm:input p :EOF)
   )
 
+;; !symbol or !"string" or !([string|symbol]+) !() nests
+(defmethod <parse-hook> ((p parser))
+  (pasm:input-char p #\!)
+  (if (pasm:parser-success? (lookahead-char? p #\())
+      (progn
+	(emit-string p "(hook-list p ")
+	(<parse-list-hook> p)
+	(emit-string p ")~%"))
+      (if (pasm:parser-success? (lookahead? p :string))
+	  (<parse-string-hook> p )
+	  (<parse-symbol-hook> p))))
+
+(defmethod <parse-symbol-hook> ((p parser))
+  (pasm:input p :symbol)
+  (emit-string p "(hook-symbol '~a)" (token-text (accepted-token p))))
+
+(defmethod <parse-string-hook> ((p parser))
+  (pasm:input :symbol)
+  (emit-string p "(hook-string \"~s\")" (token-text (accepted-token p))))
+
+(defmethod <parse-list-hook> ((p parser))
+  (input-char p #\( )
+  (@:loop
+    (if (pasm:parser-success? (lookahead? p :symbol))
+	(progn (input p :symbol) (emit-string p "'~a " (token-text (accepted-token p))))
+	(if (pasm:parser-success? (lookahead? p :string))
+	    (progn (input p :string) (emit-string p "\"~a\" " (token-text (accepted-token p))))
+	    (if (pasm:parser-success? (lookahead-char? p #\())
+		(progn (input-char p #\() (<parse-list-hook> p))
+		(@:exit-when t))))
+    )
+  (input-char p #\) )
+  )
+
+			    
 (defmethod <filter-stream> ((p parser))
   (pasm:input-char p #\~)
   (pasm:input p :symbol)
@@ -107,6 +142,7 @@
 
 (defmethod <parse-statement> ((p parser))
   (cond ((pasm:parser-success? (<parse-cycle> p)) pasm:+succeed+)
+	((pasm:parser-success? (pasm:lookahead-char? p #\!)) (<parse-hook> p)    pasm:+succeed+)
 	((pasm:parser-success? (<parse-choice> p)) pasm:+succeed+)
 	((pasm:parser-success? (<parse-return> p)) pasm:+succeed+)
 	((pasm:parser-success? (<parse-cycle-exit> p)) pasm:+succeed+)
