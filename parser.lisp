@@ -52,9 +52,11 @@
 
 			    
 (defmethod <filter-stream> ((p parser))
-  (pasm:input-char p #\~)
-  (pasm:input p :symbol)
-  (pasm:emit-string p "(pasm::pasm-filter-stream p #'~a)" (token-text (accepted-token p))))
+  (let ((*pasm-accept-trace* nil)
+	(*pasm-tracing* nil))
+    (pasm:input-char p #\~)
+    (pasm:input p :symbol)
+    (pasm:emit-string p "(pasm::pasm-filter-stream p #'~a)" (token-text (accepted-token p)))))
 
 (defmethod <parse-token-expr> ((p parser))
   (cond ((pasm:parser-success? (pasm:lookahead-char? p #\'))
