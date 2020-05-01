@@ -34,5 +34,6 @@
 
    #:ptrace
    #:*pasm-tracing*
+   #:*pasm-accept-tracing*
    #:current-rule)) ;; for debug
    

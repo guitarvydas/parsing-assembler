@@ -12,11 +12,6 @@
       (setf (next-token self) (scanner:make-token :kind :eof :text "generated eof" :line 0 :position 0))
       (setf (next-token self) (pop (token-stream self)))))
   
-(defmethod accept ((self parser))
-  (setf (accepted-token self) (next-token self))
-  (unless (eq :EOF (accepted-token self))
-    (advance-next-token self)))
-
 (defun format-token (tok)
   (if (characterp (token-text tok))
       (format nil "kind=~s line=~a position=~a text=(~a)~a" (token-kind tok) (token-line tok) (token-position tok)
@@ -27,6 +22,16 @@
 (defmethod pasm-parse-error ((self parser) message)
   (let ((final-message (format nil "~s, but got ~s" message (format-token (next-token self)))))
     (error final-message)))
+
+(defparameter *pasm-accept-tracing* nil)
+
+(defmethod accept ((self parser))
+  (setf (accepted-token self) (next-token self))
+  (unless (eq :EOF (accepted-token self))
+    (advance-next-token self))
+  (when *pasm-accept-tracing*
+    (format *standard-output* "~&accepted ~s" (format-token (accepted-token self)))
+    (format *standard-output* " next ~s~%" (format-token (next-token self)))))
 
 (defmethod lookahead-char? ((self parser) c)
   (let ((tok (next-token self)))
