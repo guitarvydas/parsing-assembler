@@ -2,7 +2,8 @@
   :depends-on (:loops :alexandria :scanner/use)
   :components ((:module "source"
                         :pathname "./"
-                        :components ((:file "package")))))
+                        :components ((:file "package")
+				     (:file "params" :depends-on ("package"))))))
 
 (defsystem :parsing-assembler/use  ;; create a usable PASM parser
   :depends-on (:parsing-assembler)

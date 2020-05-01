@@ -23,8 +23,6 @@
   (let ((final-message (format nil "~s, but got ~s" message (format-token (next-token self)))))
     (error final-message)))
 
-(defparameter *pasm-accept-tracing* nil)
-
 (defmethod accept ((self parser))
   (setf (accepted-token self) (next-token self))
   (unless (eq :EOF (accepted-token self))
@@ -124,7 +122,6 @@
 	  (scanner:token-kind (next-token self)) (scanner:token-text (next-token self)) 
 	  (scanner:token-line (next-token self)) (scanner:token-position (next-token self))))
 
-(defparameter *pasm-tracing* nil)
 
 (defmethod p-into-trace ((self parser))
   (when *pasm-tracing*
