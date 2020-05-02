@@ -28,7 +28,7 @@
   (unless (eq :EOF (accepted-token self))
     (advance-next-token self))
   (when *pasm-accept-tracing*
-    (format *standard-output* "~&accepted ~s" (format-token (accepted-token self)))
+    (format *standard-output* "~&accepted ~a ~s" (token-text (accepted-token self)) (format-token (accepted-token self)))
     (format *standard-output* " next ~s~%" (format-token (next-token self)))))
 
 (defmethod lookahead-char? ((self parser) c)
