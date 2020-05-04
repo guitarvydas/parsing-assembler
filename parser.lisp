@@ -262,12 +262,12 @@
 	 (error-if-not-success p "expected ^ok or ^fail"
 	  (if (string= "fail" (scanner:token-text (pasm:accepted-token p)))
 	      (progn
-                      (pasm:emit-string p "(setf (current-rule p) prev-rule) (pasm::p-into-trace p)")
+                      (pasm:emit-string p "(setf (pasm:current-rule p) prev-rule) (pasm::p-into-trace p)")
                       (pasm:emit-string p "(return-from ~a pasm:+fail+)" (pasm::current-rule p))
                 pasm:+succeed+)
 	      (if (string= "ok" (scanner:token-text (pasm:accepted-token p)))
 		  (progn
-                      (pasm:emit-string p "(setf (current-rule p) prev-rule) (pasm::p-return-trace p)")
+                      (pasm:emit-string p "(setf (pasm:current-rule p) prev-rule) (pasm::p-return-trace p)")
                       (pasm:emit-string p "(return-from ~a pasm:+succeed+)" (pasm::current-rule p))
                     pasm:+succeed+)
 		  pasm:+fail+)))
@@ -279,10 +279,10 @@
   (pasm:input p :symbol)
   (setf (pasm::current-rule p) (scanner:token-text (pasm:accepted-token p)))
              (pasm:emit-string p "(defmethod ~a ((p pasm:parser))~%" (pasm::current-rule p))
-             (pasm:emit-string p "  (let ((prev-rule (current-rule p)))")
-	     (pasm:emit-string p "     (setf (current-rule p) \"~a\") (pasm::p-into-trace p)~%" (pasm::current-rule p))
+             (pasm:emit-string p "  (let ((prev-rule (pasm:current-rule p)))")
+	     (pasm:emit-string p "     (setf (pasm:current-rule p) \"~a\") (pasm::p-into-trace p)~%" (pasm::current-rule p))
   (<parse-statements> p)
-             (pasm:emit-string p "(setf (current-rule p) prev-rule) (pasm::p-return-trace p)")
+             (pasm:emit-string p "(setf (pasm:current-rule p) prev-rule) (pasm::p-return-trace p)")
              (pasm:emit-string p "))~%~%")
   pasm:+succeed+
   )
@@ -292,10 +292,10 @@
   (pasm:input p :symbol)
   (setf (pasm::current-rule p) (scanner:token-text (pasm:accepted-token p)))
              (pasm:emit-string p "(defmethod ~a ((p pasm:parser)) ;; predicate~%" (pasm::current-rule p))
-             (pasm:emit-string p "  (let ((prev-rule (current-rule p)))")
-	     (pasm:emit-string p "     (setf (current-rule p) \"~a\") (pasm::p-into-trace p)~%" (pasm::current-rule p))
+             (pasm:emit-string p "  (let ((prev-rule (pasm:current-rule p)))")
+	     (pasm:emit-string p "     (setf (pasm:current-rule p) \"~a\") (pasm::p-into-trace p)~%" (pasm::current-rule p))
   (<parse-statements> p)
-             (pasm:emit-string p "(setf (current-rule p) prev-rule) (pasm::p-return-trace p)")
+             (pasm:emit-string p "(setf (pasm:current-rule p) prev-rule) (pasm::p-return-trace p)")
              (pasm:emit-string p "))~%~%")
   pasm:+succeed+
   )

@@ -14,9 +14,9 @@
   
 (defun format-token (tok)
   (if (characterp (token-text tok))
-      (format nil "[~s ~a ~a (~a)~a]" (token-kind tok) (token-line tok) (token-position tok)
+      (format nil "[~s line=~a position=~a (~a)~a]" (token-kind tok) (token-line tok) (token-position tok)
 	      (char-code (token-text tok)) (token-text tok))
-      (format nil "[~s ~a ~a ~a]" (token-kind tok) (token-line tok) (token-position tok)
+      (format nil "[~s line=~a position=~a ~a]" (token-kind tok) (token-line tok) (token-position tok)
 	      (token-text tok))))
 
 (defmethod pasm-parse-error ((self parser) message)
