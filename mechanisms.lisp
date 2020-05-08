@@ -28,8 +28,11 @@
   (unless (eq :EOF (accepted-token self))
     (advance-next-token self))
   (when *pasm-accept-tracing*
-    (format *standard-output* "~&accepted ~a ~s" (token-text (accepted-token self)) (format-token (accepted-token self)))
-    (format *standard-output* " next ~s~%" (format-token (next-token self)))))
+    (if (and (numberp *pasm-accept-tracing*) (< *pasm-accept-tracing* 0))
+	(format *standard-output* "~a" (token-text (accepted-token self)))
+	(progn
+	  (format *standard-output* "~&accepted ~a ~s" (token-text (accepted-token self)) (format-token (accepted-token self)))
+	  (format *standard-output* " next ~s~%" (format-token (next-token self)))))))
 
 (defmethod lookahead-char? ((self parser) c)
   (let ((tok (next-token self)))
