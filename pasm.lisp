@@ -17,3 +17,13 @@
 		     (setf sexp (read ins nil :eof))))))))))
 
 
+(defun pasm-to-string (package-name infilename)
+  (let ((scanned-pasm (scanner:scanner (alexandria:read-file-into-string infilename))))
+    (let ((p (make-instance 'parser)))
+      (initially p scanned-pasm)
+      (<pasm> p)
+      (let ((str (get-output-stream-string (pasm:output-string-stream p))))
+	(concatente 'string (format nil "(in-package ~s)~%~%" package-name)
+		    str)))))
+
+

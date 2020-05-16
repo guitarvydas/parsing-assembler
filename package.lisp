@@ -4,6 +4,7 @@
   (:export
    #:transpile
    #:pasm-to-file
+   #:pasm-to-string
 
    #:parser
    #:output-string-stream
