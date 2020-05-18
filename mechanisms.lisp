@@ -86,14 +86,20 @@
 
 
 (defmethod call-rule ((self parser) func)
-  (funcall func self))
+  (if (functionp func)
+      (funcall func self)
+      (error "not a function")))
 
 (defmethod call-predicate ((self parser) func)
-  (let ((%result (funcall func self)))
-    %result))
+  (if (functionp func)
+      (let ((%result (funcall func self)))
+	%result)
+      (error "not a function")))
 
 (defmethod call-external ((self parser) func)
-  (funcall func self))
+  (if (functionp func)
+      (funcall func self)
+      (error "not a function")))
 
 (defmethod accept-and-return-token ((p parser))
   (accept p)
