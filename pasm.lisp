@@ -23,7 +23,7 @@
       (initially p scanned-pasm)
       (<pasm> p)
       (let ((str (get-output-stream-string (pasm:output-string-stream p))))
-	(concatente 'string (format nil "(in-package ~s)~%~%" package-name)
+	(concatenate 'string (format nil "(in-package ~s)~%~%" package-name)
 		    str)))))
 
 
