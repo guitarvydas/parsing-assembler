@@ -29,10 +29,10 @@
     (advance-next-token self))
   (when *pasm-accept-tracing*
     (if (and (numberp *pasm-accept-tracing*) (< *pasm-accept-tracing* 0))
-	(format *standard-output* "~a" (token-text (accepted-token self)))
+	(format *error-output* "~a" (token-text (accepted-token self)))
 	(progn
-	  (format *standard-output* "~&accepted ~a ~s" (token-text (accepted-token self)) (format-token (accepted-token self)))
-	  (format *standard-output* " next ~s~%" (format-token (next-token self)))))))
+	  (format *error-output* "~&accepted ~a ~s" (token-text (accepted-token self)) (format-token (accepted-token self)))
+	  (format *error-output* " next ~s~%" (format-token (next-token self)))))))
 
 (defmethod lookahead-char? ((self parser) c)
   (let ((tok (next-token self)))
@@ -79,7 +79,7 @@
 	
 (defmethod emit-string ((self parser) fmtstr &rest args)
   (let ((out (output-string-stream self)))
-    ;(apply 'cl:format *standard-output* fmtstr args)
+    ;(apply 'cl:format *error-output* fmtstr args)
     (cond ((characterp fmtstr) 
 	   (cl:format out "~c" fmtstr))
 	  (t (apply 'cl:format out fmtstr args)))))
@@ -122,9 +122,9 @@
       (initially p (reverse %new-list)))))
 
 (defmethod ptrace ((self parser))
-  ; babel mode in emacs wants *standard-output*
+  ; babel mode in emacs wants *error-output*
   ;(format *error-output* "~&trace in ~a next=(~a ~s ~a ~a) accepted=(~a ~s ~a ~a)~%"
-  (format *standard-output* "~&trace in ~a accepted=(~a ~s ~a ~a) next=(~a ~s ~a ~a)~%"
+  (format *error-output* "~&trace in ~a accepted=(~a ~s ~a ~a) next=(~a ~s ~a ~a)~%"
 	  (current-rule self)
 	  (scanner:token-kind (accepted-token self)) (scanner:token-text (accepted-token self)) 
 	  (scanner:token-line (accepted-token self)) (scanner:token-position (accepted-token self))
@@ -135,9 +135,9 @@
 (defmethod p-into-trace ((self parser))
   (when *pasm-tracing*
     (incf (depth self))
-    (spaces *standard-output* (depth self))
-					; babel mode in emacs wants *standard-output*
-    (format *standard-output* "into   ~a accepted=(~a ~s ~a ~a) next=(~a ~s ~a ~a)~%"
+    (spaces *error-output* (depth self))
+					; babel mode in emacs wants *error-output*
+    (format *error-output* "into   ~a accepted=(~a ~s ~a ~a) next=(~a ~s ~a ~a)~%"
 	    (current-rule self)
 	    (scanner:token-kind (accepted-token self)) (scanner:token-text (accepted-token self)) 
 	    (scanner:token-line (accepted-token self)) (scanner:token-position (accepted-token self))
@@ -147,9 +147,9 @@
 (defmethod p-return-trace ((self parser))
   (when *pasm-tracing*
     (decf (depth self))
-    (spaces *standard-output* (depth self))
-					; babel mode in emacs wants *standard-output*
-    (format *standard-output* "back into ~a accepted=(~a ~s ~a ~a) next=(~a ~s ~a ~a)~%"
+    (spaces *error-output* (depth self))
+					; babel mode in emacs wants *error-output*
+    (format *error-output* "back into ~a accepted=(~a ~s ~a ~a) next=(~a ~s ~a ~a)~%"
 	    (current-rule self)
 	    (scanner:token-kind (accepted-token self)) (scanner:token-text (accepted-token self)) 
 	    (scanner:token-line (accepted-token self)) (scanner:token-position (accepted-token self))
