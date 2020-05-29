@@ -9,10 +9,11 @@
       (transpile-from-tokens p dsl-string start-function)))
 
 (defmethod transpile-from-tokens ((p parser) dsl-string start-function)
-  (format *standard-output* "~&**** PASM (tracing ~a)~%" *pasm-tracing*)
   (let ((*pasm-tracing* nil)
 	(*pasm-accept-tracing* nil))
     (pasm::<pasm> p))
+  (format *standard-output* "~&**** PASM (pasm-tracing ~a)~%" pasm:*pasm-tracing*)
+  (format *standard-output* "~&**** PASM (pasm-accept-tracing ~a)~%" pasm:*pasm-accept-tracing*)
   (let ((dsl-lisp-string (get-output-stream-string (pasm:output-string-stream p))))
     (let ((pkg (package-name (find-package (symbol-package start-function)))))
       (compile-string-as-file dsl-lisp-string pkg) 
