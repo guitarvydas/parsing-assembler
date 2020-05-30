@@ -61,7 +61,9 @@
 (defmethod input-char ((self parser) c)
   (if (eq +succeed+ (lookahead-char? self c))
       (accept self)
-     (pasm-parse-error self (format nil "expected character ~a (~a)" c (char-code c)))))
+     (pasm-parse-error 
+      self 
+      (format nil "expected character ~s (~a)" c (char-code c)))))
 
 (defmethod input-symbol ((self parser) str)
   (flet ((nope () (pasm-parse-error self (format nil "expected :symbol with text ~a" str))))
