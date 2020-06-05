@@ -1,0 +1,11 @@
+operations
+
+accept(token-stream,kind,text) --> token-stream
+                               -- might cause failure
+
+                     -- kind is an token tag (e.g. defaults: [:CHARACTER | :COMMENT | :SYMBOL |
+                                          :STRING | :INTEGER | :SPACE] ; other kinds can
+					  be defined and used)
+		     text is a string or NIL
+		     "accept" advances stream by one token if Kind and (non-NIL) text matches
+		     

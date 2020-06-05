@@ -5,13 +5,13 @@
 	((eq :COMMENT (token-kind (next-token p))))
 	(t (accept p))))
 	 
-(defmethod <pasm> ((p parser))
+(defmethod <pasm> ((p parser) &optional (suffix ""))
   (pasm-filter-stream p #'skip-spaces-and-comments)
   (@:loop
     (if (pasm:parser-success? (pasm:lookahead-char? p #\=))
-	(<parse-rule> p)
+	(<parse-rule> p suffix)
 	(if (pasm:parser-success? (pasm:lookahead-char? p #\-))
-	    (<parse-predicate> p)
+	    (<parse-predicate> p suffix)
 	    (@:exit-when t)))) ;; else exit
   (pasm:input p :EOF)
   )
@@ -274,7 +274,7 @@
 	 pasm:+succeed+)
 	(t pasm:+fail+)))
   
-(defmethod <parse-rule> ((p parser))
+(defmethod <parse-rule> ((p parser) suffix)
   (pasm:input-char p #\=)
   (pasm:input p :symbol)
   (setf (pasm::current-rule p) (scanner:token-text (pasm:accepted-token p)))
@@ -289,7 +289,7 @@
   pasm:+succeed+
   )
 
-(defmethod <parse-predicate> ((p parser))
+(defmethod <parse-predicate> ((p parser) suffix)
   (pasm:input-char p #\-)
   (pasm:input p :symbol)
   (setf (pasm::current-rule p) (scanner:token-text (pasm:accepted-token p)))
