@@ -8,7 +8,8 @@
       (with-open-file (outf outfilename :direction :output :if-exists :supersede :if-does-not-exist :create)
 	(let ((str (get-output-stream-string (pasm:output-string-stream p))))
 	  (format outf "(in-package ~s)~%~%" package-name)
-	  (write-string str outf))))))
+	  (write-string str outf)
+          nil)))))
 
 
 (defun pasm-to-string (package-name infilename &optional (suffix ""))
