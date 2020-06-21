@@ -7,7 +7,8 @@
       (<pasm> p suffix)
       (with-open-file (outf outfilename :direction :output :if-exists :supersede :if-does-not-exist :create)
 	(let ((str (get-output-stream-string (pasm:output-string-stream p))))
-	  (format outf "(in-package ~s)~%~%" package-name)
+	  (format outf "(in-package ~s)~%(proclaim '(optimize (debug 3) (safety 3) (speed 0)))
+~%~%" package-name)
 	  (write-string str outf)
           nil)))))
 
