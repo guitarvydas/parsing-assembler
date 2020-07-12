@@ -10,6 +10,7 @@
   ((token-stream :accessor token-stream :initarg :token-stream :initform nil) ;; actually, just a list
    (output-string-stream :accessor output-string-stream :initarg :output-stream 
 			 :initform (make-string-output-stream))
+   (output-token-stream :accessor %output-token-stream :initform nil)
    (next-token :accessor next-token :initform nil)
    (accepted-token :accessor accepted-token :initform nil)
    (state :accessor state :initform :idle)
@@ -27,3 +28,9 @@
 (defgeneric input-char (self c))
 
 (defgeneric emit-string (self str &rest args))
+
+(defmethod append-token ((self parser) token)
+  (push token (output-token-stream self)))
+
+(defmethod output-token-stream ((self parser))
+  (reverse (%output-token-stream self)))
