@@ -30,7 +30,7 @@
 (defgeneric emit-string (self str &rest args))
 
 (defmethod append-token ((self parser) token)
-  (push token (output-token-stream self)))
+  (push token (%output-token-stream self)))
 
 (defmethod output-token-stream ((self parser))
   (reverse (%output-token-stream self)))
