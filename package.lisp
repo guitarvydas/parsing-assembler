@@ -2,6 +2,10 @@
   (:use :cl :scanner)
   (:nicknames "PASM")
   (:export
+   #:create-and-load-parser
+   #:create-parser
+   #:load-parser
+
    #:transpile
    #:pasm-to-file
    #:pasm-to-string

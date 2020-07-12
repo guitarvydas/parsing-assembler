@@ -31,3 +31,23 @@
     (write-string str f))
   (load "/tmp/temp.lisp"))
 
+
+
+(defun create-and-load-parser (dsl-as-string)
+  (let ((dsl-parser (create-parser dsl-as-string)))
+    (load-parser dsl-parser)))
+
+(defun create-parser (dsl-as-string)
+  (let ((*pasm-tracing* nil)
+	(*pasm-accept-tracing* nil)
+	(p (make-instance 'parsing-assembler::parser)))
+    (let ((tokens (scanner:scanner dsl-as-string)))
+      (initially p dsl-as-string)
+      (pasm::<pasm> p)
+      (get-output-string-stream p))))
+
+(defun load-parser (parser-as-string)
+  ;; see comments in compile-file-as-string
+  (with-open-file (f "/tmp/temp.lisp" :direction :output :if-exists :supersede :if-does-not-exist :create)
+    (write-string parser-as-string f))
+  (load "/tmp/temp.lisp"))
