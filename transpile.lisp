@@ -33,18 +33,22 @@
 
 
 
+(defun create-and-load-parser-from-file (dsl-filename)
+  (let ((dsl-as-string (alexandria:read-file-into-string dsl-filename)))
+    (create-and-load-parser dsl-as-string)))
+
 (defun create-and-load-parser (dsl-as-string)
-  (let ((dsl-parser (create-parser dsl-as-string)))
-    (load-parser dsl-parser)))
+  (let ((dsl-parser-as-string (create-parser dsl-as-string)))
+    (load-parser dsl-parser-as-string)))
 
 (defun create-parser (dsl-as-string)
   (let ((*pasm-tracing* nil)
 	(*pasm-accept-tracing* nil)
 	(p (make-instance 'parsing-assembler::parser)))
     (let ((tokens (scanner:scanner dsl-as-string)))
-      (initially p dsl-as-string)
+      (initially p tokens)
       (pasm::<pasm> p)
-      (get-output-string-stream p))))
+      (cl:get-output-stream-string (output-string-stream p)))))
 
 (defun load-parser (parser-as-string)
   ;; see comments in compile-file-as-string

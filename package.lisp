@@ -2,9 +2,13 @@
   (:use :cl :scanner)
   (:nicknames "PASM")
   (:export
+   #:create-and-load-parser-from-file
    #:create-and-load-parser
    #:create-parser
    #:load-parser
+
+   #:append-token
+   #:output-token-stream
 
    #:transpile
    #:pasm-to-file
